@@ -1,6 +1,7 @@
 <?php
 
 namespace Mtrajano\LaravelSwagger\Parameters;
+use Illuminate\Support\Str;
 
 class PathParameterGenerator implements ParameterGenerator
 {
@@ -43,6 +44,6 @@ class PathParameterGenerator implements ParameterGenerator
 
     private function isPathVariableRequired($pathVariable)
     {
-        return !str_contains($pathVariable, '?');
+        return !Str::contains($pathVariable, '?');
     }
 }
