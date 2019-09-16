@@ -1,6 +1,7 @@
 <?php
 
 namespace Mtrajano\LaravelSwagger\Parameters\Concerns;
+use Illuminate\Support\Str;
 
 trait GeneratesFromRules
 {
