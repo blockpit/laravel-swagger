@@ -2,11 +2,13 @@
 
 namespace Mtrajano\LaravelSwagger;
 
-use ReflectionMethod;
-use Illuminate\Support\Str;
-use Illuminate\Routing\Route;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlockFactory;
+use ReflectionClass;
+use ReflectionMethod;
+use zpt\anno\Annotations;
 
 class Generator
 {
@@ -44,16 +46,17 @@ class Generator
             }
 
             $this->action = $route->getAction()['uses'];
-            $methods = $route->methods();
 
+            $methods = $route->methods();
             if (!isset($this->docs['paths'][$this->uri])) {
                 $this->docs['paths'][$this->uri] = [];
             }
 
             foreach ($methods as $method) {
                 $this->method = strtolower($method);
-
-                if (in_array($this->method, $this->config['ignoredMethods'])) continue;
+                if (in_array($this->method, $this->config['ignoredMethods'])) {
+                    continue;
+                }
 
                 $this->generatePath();
             }
@@ -110,8 +113,15 @@ class Generator
 
     protected function generatePath()
     {
+        $successResponse = null;
         $actionInstance = is_string($this->action) ? $this->getActionClassInstance($this->action) : null;
         $docBlock = $actionInstance ? ($actionInstance->getDocComment() ?: "") : "";
+        if (Str::contains($docBlock, 'Resource')) {
+            $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
+            $className = 'App\Http\Resources\\' . $classAnnotations['Resource'];
+            $resourceClass = new ReflectionClass($className);
+            $successResponse = $resourceClass->getMethod('sampleResponse')->invoke(null);
+        }
 
         list($isDeprecated, $summary, $description) = $this->parseActionDocBlock($docBlock);
 
@@ -120,9 +130,9 @@ class Generator
             'description' => $description,
             'deprecated' => $isDeprecated,
             'responses' => [
-                '200' => [
-                    'description' => 'OK'
-                ]
+                '200' => $successResponse
+
+
             ],
         ];
 
@@ -148,12 +158,14 @@ class Generator
 
     protected function getFormRules()
     {
-        if (!is_string($this->action)) return false;
+        if (!is_string($this->action)) {
+            return false;
+        }
 
         $parameters = $this->getActionClassInstance($this->action)->getParameters();
 
         foreach ($parameters as $parameter) {
-            $class = (string) $parameter->getType();
+            $class = (string)$parameter->getType();
 
             if (is_subclass_of($class, FormRequest::class)) {
                 return (new $class)->rules();
@@ -192,10 +204,10 @@ class Generator
             $isDeprecated = $parsedComment->hasTag('deprecated');
 
             $summary = $parsedComment->getSummary();
-            $description = (string) $parsedComment->getDescription();
+            $description = (string)$parsedComment->getDescription();
 
             return [$isDeprecated, $summary, $description];
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return [false, "", ""];
         }
     }
