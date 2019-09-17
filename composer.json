@@ -36,6 +36,8 @@
         }
     },
     "require": {
-        "phpdocumentor/reflection-docblock": "^4.3"
+        "phpdocumentor/reflection-docblock": "^4.3",
+        "zeptech/annotations": "^1.1"
+
     }
 }
