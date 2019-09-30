@@ -2,7 +2,7 @@
 
 namespace Mtrajano\LaravelSwagger\Helpers;
 
-class SimpleJsonResponse
+class SimpleJsonResponse implements \JsonSerializable
 {
 
 
@@ -27,9 +27,9 @@ class SimpleJsonResponse
     }
 
     /**
-     * @return false|string
+     * @return array|mixed
      */
-    public function __toString()
+    public function jsonSerialize()
     {
         $data = [
             'description' => $this->description,
@@ -38,8 +38,7 @@ class SimpleJsonResponse
             ]
         ];
 
-        return json_encode($data);
+        return $data;
     }
-
 
 }
