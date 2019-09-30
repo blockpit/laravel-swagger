@@ -120,7 +120,7 @@ class Generator
             $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
             $className = 'App\Http\Resources\\' . $classAnnotations['Resource'];
             $resourceClass = new ReflectionClass($className);
-            $successResponse = $resourceClass->getMethod('sampleResponse')->invoke(null);
+            $docResponses = $resourceClass->getMethod('docResponses')->invoke(null);
         }
 
         list($isDeprecated, $summary, $description) = $this->parseActionDocBlock($docBlock);
@@ -129,11 +129,10 @@ class Generator
             'summary' => $summary,
             'description' => $description,
             'deprecated' => $isDeprecated,
-            'responses' => [
-                '200' => $successResponse
+            'responses' => $docResponses
 
 
-            ],
+            ,
         ];
 
         $this->addActionParameters();
