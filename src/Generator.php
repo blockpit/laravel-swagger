@@ -113,13 +113,12 @@ class Generator
 
     protected function generatePath()
     {
-        $successResponse = null;
+        $docResponses = null;
         $actionInstance = is_string($this->action) ? $this->getActionClassInstance($this->action) : null;
         $docBlock = $actionInstance ? ($actionInstance->getDocComment() ?: "") : "";
         if (Str::contains($docBlock, 'Resource')) {
             $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
-            $className = 'App\Http\Resources\\' . $classAnnotations['Resource'];
-            $resourceClass = new ReflectionClass($className);
+            $resourceClass = new ReflectionClass($classAnnotations['Resource']);
             $docResponses = $resourceClass->getMethod('docResponses')->invoke(null);
         }
 
