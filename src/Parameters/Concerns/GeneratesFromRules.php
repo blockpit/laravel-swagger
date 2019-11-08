@@ -1,6 +1,7 @@
 <?php
 
 namespace Mtrajano\LaravelSwagger\Parameters\Concerns;
+use Illuminate\Support\Str;
 
 trait GeneratesFromRules
 {
@@ -60,7 +61,7 @@ trait GeneratesFromRules
     private function getInParameter(array $paramRules)
     {
         foreach ($paramRules as $rule) {
-            if (starts_with($rule, 'in:')) {
+            if (Str::startsWith($rule, 'in:')) {
                 return $rule;
             }
         }
