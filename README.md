@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/blockpit/laravel-swagger.svg?branch=master)](https://travis-ci.com/blockpit/laravel-swagger)
+
 # Laravel Swagger
 
 This package scans your laravel project's routes and auto generates a Swagger 2.0 documentation for you. If you inject Form Request classes in your controller's actions as request validation, it will also generate the parameters for each request that has them. It will take into account wether the request is a GET/HEAD/DELETE or a POST/PUT/PATCH request and make its best guess as to the type of parameter object it should generate. It will also generate the path parameters if your route contains them. Finally, this package will also scan any documentation you have in your action methods and add it as summary and description to that path, along with any appropriate annotations such as @deprecated.
