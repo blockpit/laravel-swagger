@@ -6,13 +6,13 @@ One thing to note is this library leans on being explicit. It will choose to inc
 
 ## Installation
 
-The package can easily be installed by running `composer require mtrajano/laravel-swagger` in your project's root folder.
+The package can easily be installed by running `composer require blockpit/laravel-swagger` in your project's root folder.
 
-If you are running a version of Laravel < 5.5 also make sure you add `Mtrajano\LaravelSwagger\SwaggerServiceProvider::class` to the `providers` array in `config/app.php`.
+If you are running a version of Laravel < 5.5 also make sure you add `blockpit\LaravelSwagger\SwaggerServiceProvider::class` to the `providers` array in `config/app.php`.
 
 This will register the artisan command that will be available to you.
 
-You can also override the default config provided by the application by running `php artisan vendor:publish --provider "Mtrajano\LaravelSwagger\SwaggerServiceProvider"` in your projects root and change the configuration in the new `config/laravel-swagger.php` file created.
+You can also override the default config provided by the application by running `php artisan vendor:publish --provider "blockpit\LaravelSwagger\SwaggerServiceProvider"` in your projects root and change the configuration in the new `config/laravel-swagger.php` file created.
 
 ## Usage
 

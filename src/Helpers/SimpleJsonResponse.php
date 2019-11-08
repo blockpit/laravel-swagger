@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Helpers;
+namespace blockpit\LaravelSwagger\Helpers;
 
 class SimpleJsonResponse implements \JsonSerializable
 {

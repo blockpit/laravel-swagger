@@ -1,8 +1,8 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests;
+namespace blockpit\LaravelSwagger\Tests;
 
-use Mtrajano\LaravelSwagger\Generator;
+use blockpit\LaravelSwagger\Generator;
 
 class GeneratorTest extends TestCase
 {

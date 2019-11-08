@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parameters;
+namespace blockpit\LaravelSwagger\Parameters;
 
 class BodyParameterGenerator implements ParameterGenerator
 {

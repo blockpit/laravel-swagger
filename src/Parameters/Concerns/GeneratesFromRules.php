@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Parameters\Concerns;
+namespace blockpit\LaravelSwagger\Parameters\Concerns;
 use Illuminate\Support\Str;
 
 trait GeneratesFromRules

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Interfaces;
+namespace blockpit\LaravelSwagger\Interfaces;
 
 interface Documentable
 {

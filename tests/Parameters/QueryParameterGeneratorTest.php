@@ -1,10 +1,10 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger\Tests\Parameters;
+namespace blockpit\LaravelSwagger\Tests\Parameters;
 
 use Illuminate\Validation\Rule;
-use Mtrajano\LaravelSwagger\Tests\TestCase;
-use Mtrajano\LaravelSwagger\Parameters\QueryParameterGenerator;
+use blockpit\LaravelSwagger\Tests\TestCase;
+use blockpit\LaravelSwagger\Parameters\QueryParameterGenerator;
 
 class QueryParameterGeneratorTest extends TestCase
 {

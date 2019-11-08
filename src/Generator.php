@@ -1,6 +1,6 @@
 <?php
 
-namespace Mtrajano\LaravelSwagger;
+namespace blockpit\LaravelSwagger;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
