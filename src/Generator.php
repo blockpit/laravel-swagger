@@ -161,10 +161,8 @@ class Generator
         }
 
         $parameters = $this->getActionClassInstance($this->action)->getParameters();
-
         foreach ($parameters as $parameter) {
             $class = (string)$parameter->getType();
-
             if (is_subclass_of($class, FormRequest::class)) {
                 return (new $class)->rules();
             }

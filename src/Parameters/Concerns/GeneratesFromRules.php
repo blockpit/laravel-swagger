@@ -2,6 +2,7 @@
 
 namespace blockpit\LaravelSwagger\Parameters\Concerns;
 use Illuminate\Support\Str;
+use function PHPSTORM_META\type;
 
 trait GeneratesFromRules
 {
@@ -37,7 +38,7 @@ trait GeneratesFromRules
 
     protected function isArrayParameter($param)
     {
-        return str_contains($param, '*');
+        return Str::contains($param, '*');
     }
 
     protected function getArrayKey($param)
@@ -61,7 +62,8 @@ trait GeneratesFromRules
     private function getInParameter(array $paramRules)
     {
         foreach ($paramRules as $rule) {
-            if (Str::startsWith($rule, 'in:')) {
+
+            if (gettype($rule) == 'string' && Str::startsWith($rule, 'in:')) {
                 return $rule;
             }
         }
