@@ -26,11 +26,14 @@ class Generator
 
     protected $action;
 
+    protected $tags;
+
     public function __construct($config, $routeFilter = null)
     {
         $this->config = $config;
         $this->routeFilter = $routeFilter;
         $this->docParser = DocBlockFactory::createInstance();
+        $this->tags = collect();
     }
 
     public function generate()
@@ -54,15 +57,14 @@ class Generator
 
             foreach ($methods as $method) {
                 $this->method = strtolower($method);
-                if (in_array($this->method, $this->config['ignoredMethods'])) {
+                if (in_array($this->method, $this->config['ignoredMethods']) || gettype($this->action) != 'string') {
                     continue;
                 }
-
                 $this->generatePath();
             }
         }
 
-        return $this->docs;
+        return ['docs' => $this->docs, 'tags' =>  $this->tags];
     }
 
     protected function getBaseInfo()
@@ -116,19 +118,26 @@ class Generator
         $docResponses = null;
         $actionInstance = is_string($this->action) ? $this->getActionClassInstance($this->action) : null;
         $docBlock = $actionInstance ? ($actionInstance->getDocComment() ?: "") : "";
+        $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
+
         if (Str::contains($docBlock, 'Resource')) {
-            $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
             $resourceClass = new ReflectionClass($classAnnotations['Resource']);
             $docResponses = $resourceClass->getMethod('docResponses')->invoke(null);
         }
+        $tags = collect(explode(',', $classAnnotations['Tags'] ?? 'default'));
 
+        $tags = $tags->map(function ($tag) {
+            return trim($tag);
+        });
+
+        $this->tags = $this->tags->merge($tags)->unique();
         list($isDeprecated, $summary, $description) = $this->parseActionDocBlock($docBlock);
-
         $this->docs['paths'][$this->uri][$this->method] = [
             'summary' => $summary,
             'description' => $description,
             'deprecated' => $isDeprecated,
-            'responses' => $docResponses
+            'responses' => $docResponses,
+            'tags' => collect($tags)
 
 
             ,
