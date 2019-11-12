@@ -3,6 +3,7 @@
 namespace blockpit\LaravelSwagger;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class GenerateSwaggerDoc extends Command
 {
@@ -31,12 +32,31 @@ class GenerateSwaggerDoc extends Command
     {
         $config = config('laravel-swagger');
 
-        $docs = (new Generator($config, $this->option('filter') ?: null))->generate();
+        $generatorOutput = (new Generator($config, $this->option('filter') ?: null))->generate();
+        $fullDocs = $generatorOutput['docs'];
+        $allPaths = collect($fullDocs['paths']);
 
-        $formattedDocs = (new FormatterManager($docs))
-            ->setFormat($this->option('format'))
-            ->format();
+        $tagPaths = [];
+        $formattedDocsByTag = [];
+        foreach ($generatorOutput['tags'] as $tag) {
+            $tagsPaths[$tag] = $allPaths->filter(function ($methods) use ($tag) {
+                $tags = collect($methods)->pluck('tags')->toArray();
+                if (sizeof($tags) == 0) {
+                    return false;
+                }
+                $tags = collect(call_user_func_array('array_merge', $tags))->unique();
+                return $tags->contains($tag);
+            });
+            $tagDocs = $fullDocs;
+            $tagDocs['paths'] = $tagsPaths[$tag];
+            $formattedDocsByTag[$tag] = (new FormatterManager($tagDocs))->setFormat($this->option('format'))->format();
+        }
 
-        $this->line($formattedDocs);
+        foreach ($formattedDocsByTag as $key => $docs) {
+            $filename = $key . '.json';
+            printf('writing to %s %s', $filename, PHP_EOL);
+            Storage::disk('public')->put($filename, $docs);
+        }
+
     }
 }
