@@ -10,7 +10,7 @@
     ],
     "require-dev": {
         "orchestra/testbench": "~3.0",
-        "phpunit/phpunit": "6.*"
+        "phpunit/phpunit": "8.*"
     },
     "autoload": {
         "files": [
@@ -38,6 +38,5 @@
     "require": {
         "phpdocumentor/reflection-docblock": "^4.3",
         "zeptech/annotations": "^1.1"
-
     }
 }
