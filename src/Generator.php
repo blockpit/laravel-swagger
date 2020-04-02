@@ -28,12 +28,15 @@ class Generator
 
     protected $tags;
 
+    protected $scopes;
+
     public function __construct($config, $routeFilter = null)
     {
         $this->config = $config;
         $this->routeFilter = $routeFilter;
         $this->docParser = DocBlockFactory::createInstance();
         $this->tags = collect();
+        $this->scopes = collect();
     }
 
     public function generate()
@@ -64,7 +67,7 @@ class Generator
             }
         }
 
-        return ['docs' => $this->docs, 'tags' =>  $this->tags];
+        return ['docs' => $this->docs, 'tags' =>  $this->tags, 'scopes' => $this->scopes];
     }
 
     protected function getBaseInfo()
@@ -124,23 +127,28 @@ class Generator
             $resourceClass = new ReflectionClass($classAnnotations['Resource']);
             $docResponses = $resourceClass->getMethod('docResponses')->invoke(null);
         }
-        $tags = collect(explode(',', $classAnnotations['Tags'] ?? 'default'));
+        $tags = collect(explode(',', $classAnnotations['tags'] ?? 'default'));
+        $scopes = collect(explode(',', $classAnnotations['scopes'] ?? 'default'))->push('default');
 
         $tags = $tags->map(function ($tag) {
             return trim($tag);
         });
 
+        $scopes = $scopes->map(function ($scope) {
+            return trim($scope);
+        });
+
         $this->tags = $this->tags->merge($tags)->unique();
+        $this->scopes = $this->scopes->merge($scopes)->unique();
+
         list($isDeprecated, $summary, $description) = $this->parseActionDocBlock($docBlock);
         $this->docs['paths'][$this->uri][$this->method] = [
             'summary' => $summary,
             'description' => $description,
             'deprecated' => $isDeprecated,
             'responses' => $docResponses,
-            'tags' => collect($tags)
-
-
-            ,
+            'tags' => collect($tags),
+            'scopes' => collect($scopes),
         ];
 
         $this->addActionParameters();

@@ -37,22 +37,22 @@ class GenerateSwaggerDoc extends Command
         $allPaths = collect($fullDocs['paths']);
 
         $tagPaths = [];
-        $formattedDocsByTag = [];
-        foreach ($generatorOutput['tags'] as $tag) {
-            $tagsPaths[$tag] = $allPaths->filter(function ($methods) use ($tag) {
-                $tags = collect($methods)->pluck('tags')->toArray();
+        $formattedDocsByScope = [];
+        foreach ($generatorOutput['scopes'] as $scopes) {
+            $tagsPaths[$scopes] = $allPaths->filter(function ($methods) use ($scopes) {
+                $tags = collect($methods)->pluck('scopes')->toArray();
                 if (sizeof($tags) == 0) {
                     return false;
                 }
                 $tags = collect(call_user_func_array('array_merge', $tags))->unique();
-                return $tags->contains($tag);
+                return $tags->contains($scopes);
             });
             $tagDocs = $fullDocs;
-            $tagDocs['paths'] = $tagsPaths[$tag];
-            $formattedDocsByTag[$tag] = (new FormatterManager($tagDocs))->setFormat($this->option('format'))->format();
+            $tagDocs['paths'] = $tagsPaths[$scopes];
+            $formattedDocsByScope[$scopes] = (new FormatterManager($tagDocs))->setFormat($this->option('format'))->format();
         }
 
-        foreach ($formattedDocsByTag as $key => $docs) {
+        foreach ($formattedDocsByScope as $key => $docs) {
             $filename = $key . '.json';
             printf('writing to %s %s', $filename, PHP_EOL);
             Storage::disk('public')->put($filename, $docs);
