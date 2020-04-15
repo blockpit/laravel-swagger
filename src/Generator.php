@@ -2,6 +2,7 @@
 
 namespace blockpit\LaravelSwagger;
 
+use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
@@ -123,7 +124,7 @@ class Generator
         $docBlock = $actionInstance ? ($actionInstance->getDocComment() ?: "") : "";
         $classAnnotations = new Annotations($this->getActionClassInstance($this->action));
 
-        if (Str::contains($docBlock, 'Resource')) {
+        if (Str::contains($docBlock, '@Resource')) {
             $resourceClass = new ReflectionClass($classAnnotations['Resource']);
             $docResponses = $resourceClass->getMethod('docResponses')->invoke(null);
         }
@@ -227,7 +228,7 @@ class Generator
             $description = (string)$parsedComment->getDescription();
 
             return [$isDeprecated, $summary, $description];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [false, "", ""];
         }
     }
